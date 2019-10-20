@@ -20,7 +20,7 @@ module.exports = {
         return Role
             .findByPk(req.params.id)
             .then((role) => {
-                if (!Role) {
+                if (!role) {
                     return res.status(404).send({
                         message: 'Role not found!',
                     });
@@ -49,19 +49,19 @@ module.exports = {
     update(req, res) {
         return Role
             .findByPk(req.params.id)
-            .then(Role => {
-                if (!Role) {
+            .then(role => {
+                if (!role) {
                     return res.status(404).send({
                         message: 'Role not found',
                     });
                 }
 
-                return Role
+                return role
                     .update({
-                        name: req.body.name || Role.name,
-                        code: req.body.code || Role.code,
+                        name: req.body.name || role.name,
+                        code: req.body.code || role.code,
                     })
-                    .then((role) => {
+                    .then(() => {
                         res.status(200).send(role);
                     })
                     .catch((error) => {
@@ -76,13 +76,13 @@ module.exports = {
     delete(req, res) {
         return Role
             .findByPk(req.params.id)
-            .then(Role => {
-                if (!Role) {
+            .then(role => {
+                if (!role) {
                     return res.status(400).send({
                         message: 'Role not found',
                     });
                 }
-                return Role
+                return role
                     .destroy()
                     .then(() => {
                         res.status(204).send();

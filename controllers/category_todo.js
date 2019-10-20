@@ -1,34 +1,33 @@
-const User = require('../models').user;
+const CategoryTodo = require('../models').category_todo;
 
 module.exports = {
     list(req, res) {
-        return User
+        return CategoryTodo
             .findAll({
-                include: ['role'],
                 order: [
                     ['createdAt', 'DESC']
                 ],
             })
-            .then((users) => {
-                res.status(200).send(users);
+            .then((category_todo) => {
+                res.status(200).send(category_todo);
             })
             .catch((error) => {
-                res.status(400).send(error);
+                res.status(400).send(category_todo);
             });
     },
 
     getById(req, res) {
-        return User
+        return CategoryTodo
             .findByPk(req.params.id, {
-                include: ['role']
+                include: ['todo']
             })
-            .then((user) => {
-                if (!user) {
+            .then((category_todo) => {
+                if (!category_todo) {
                     return res.status(404).send({
-                        message: 'User not found!',
+                        message: 'Category todo not found!'
                     });
                 }
-                return res.status(200).send(user);
+                return res.status(200).send(category_todo);
             })
             .catch((error) => {
                 res.status(400).send(error);
@@ -36,14 +35,14 @@ module.exports = {
     },
 
     add(req, res) {
-        return User
+        return CategoryTodo
             .create({
                 name: req.body.name,
-                age: req.body.age,
-                role_id: req.body.role_id
+                slug: req.body.slug,
+                description: req.body.description
             })
-            .then((user) => {
-                res.status(201).send(user);
+            .then((category_todo) => {
+                res.status(201).send(category_todo);
             })
             .catch((error) => {
                 res.status(400).send(error);
@@ -51,22 +50,22 @@ module.exports = {
     },
 
     update(req, res) {
-        return User
+        return CategoryTodo
             .findByPk(req.params.id)
-            .then((user) => {
-                if (!user) {
+            .then((category_todo) => {
+                if (!category_todo) {
                     return res.status(404).send({
-                        message: 'User not found!',
+                        message: 'Category todo not found!'
                     });
                 }
-                return user
+                return category_todo
                     .update({
-                        name: req.body.name || user.name,
-                        age: req.body.age || user.age,
-                        role_id: req.body.role_id || user.role_id
+                        name: req.body.name || category_todo.name,
+                        slug: req.body.slug || category_todo.slug,
+                        description: req.body.description || category_todo.description,
                     })
                     .then(() => {
-                        res.status(200).send(user);
+                        res.status(200).send(category_todo);
                     })
                     .catch((error) => {
                         res.status(400).send(error);
@@ -77,16 +76,17 @@ module.exports = {
             });
     },
 
+
     delete(req, res) {
-        return User
+        return CategoryTodo
             .findByPk(req.params.id)
-            .then((user) => {
-                if (!user) {
+            .then((category_todo) => {
+                if (!category_todo) {
                     return res.status(400).send({
-                        message: 'User not found',
+                        message: 'Category todo not found!',
                     });
                 }
-                return user
+                return category_todo
                     .destroy()
                     .then(() => {
                         res.status(204).send();

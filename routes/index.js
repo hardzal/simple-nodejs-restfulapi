@@ -10,6 +10,8 @@ express.application.prefix = express.Router.prefix = function (path, configure) 
 
 const userController = require('../controllers').user;
 const roleController = require('../controllers').role;
+const todoController = require('../controllers').todo;
+const categoryTodoController = require('../controllers').category_todo;
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -30,6 +32,18 @@ router.prefix('/api/v1', function (router) {
   router.post('/role', roleController.add);
   router.put('/role/:id', roleController.update);
   router.delete('/role/:id', roleController.delete);
+
+  router.get('/todo', todoController.list);
+  router.get('/todo/:id', todoController.getById);
+  router.post('/todo', todoController.add);
+  router.put('/todo/:id', todoController.update);
+  router.delete('/todo/:id', todoController.delete);
+
+  router.get('/category_todo', categoryTodoController.list);
+  router.get('/category_todo/:id', categoryTodoController.getById);
+  router.post('/category_todo', categoryTodoController.add);
+  router.put('/category_todo/:id', categoryTodoController.update);
+  router.delete('/category_todo/:id', categoryTodoController.delete);
 });
 
 module.exports = router;

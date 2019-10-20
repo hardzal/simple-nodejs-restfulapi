@@ -1,16 +1,16 @@
-const User = require('../models').user;
+const Todo = require('../models').todo;
 
 module.exports = {
     list(req, res) {
-        return User
+        return Todo
             .findAll({
-                include: ['role'],
+                include: ['user', 'category_todo'],
                 order: [
-                    ['createdAt', 'DESC']
+                    ['createdAt', 'DESC'],
                 ],
             })
-            .then((users) => {
-                res.status(200).send(users);
+            .then((todos) => {
+                res.status(200).send(todos);
             })
             .catch((error) => {
                 res.status(400).send(error);
@@ -18,17 +18,17 @@ module.exports = {
     },
 
     getById(req, res) {
-        return User
+        return Todo
             .findByPk(req.params.id, {
-                include: ['role']
+                include: ['user', 'category_todo']
             })
-            .then((user) => {
-                if (!user) {
+            .then((todo) => {
+                if (!todo) {
                     return res.status(404).send({
-                        message: 'User not found!',
+                        message: 'Todo not found!',
                     });
                 }
-                return res.status(200).send(user);
+                return res.status(200).send(todo);
             })
             .catch((error) => {
                 res.status(400).send(error);
@@ -36,11 +36,12 @@ module.exports = {
     },
 
     add(req, res) {
-        return User
+        return Todo
             .create({
-                name: req.body.name,
-                age: req.body.age,
-                role_id: req.body.role_id
+                user_id: req.body.user_id,
+                category_id: req.body.category_id,
+                title: req.body.title,
+                description: req.body.description,
             })
             .then((user) => {
                 res.status(201).send(user);
@@ -51,22 +52,23 @@ module.exports = {
     },
 
     update(req, res) {
-        return User
+        return Todo
             .findByPk(req.params.id)
-            .then((user) => {
-                if (!user) {
+            .then((todo) => {
+                if (!todo) {
                     return res.status(404).send({
-                        message: 'User not found!',
+                        message: 'Todo not found!',
                     });
                 }
-                return user
+                return todo
                     .update({
-                        name: req.body.name || user.name,
-                        age: req.body.age || user.age,
-                        role_id: req.body.role_id || user.role_id
+                        user_id: req.body.user_id || todo.user_id,
+                        category_id: req.body.category_id || todo.category_id,
+                        title: req.body.title || todo.title,
+                        description: req.body.description || todo.description,
                     })
                     .then(() => {
-                        res.status(200).send(user);
+                        res.status(200).send(todo);
                     })
                     .catch((error) => {
                         res.status(400).send(error);
@@ -78,15 +80,15 @@ module.exports = {
     },
 
     delete(req, res) {
-        return User
+        return Todo
             .findByPk(req.params.id)
-            .then((user) => {
-                if (!user) {
-                    return res.status(400).send({
-                        message: 'User not found',
+            .then((todo) => {
+                if (!todo) {
+                    return res.status(404).send({
+                        message: 'Todo not found!',
                     });
                 }
-                return user
+                return todo
                     .destroy()
                     .then(() => {
                         res.status(204).send();
@@ -99,5 +101,4 @@ module.exports = {
                 res.status(400).send(error);
             });
     },
-
 };
